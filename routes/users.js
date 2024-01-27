@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 router.get(`/`, async (req, res) =>{
-    const userList = await User.find().select('-passwordHash');
+    const userList = await User.find()
 
     if(!userList) {
         res.status(500).json({success: false})
@@ -14,7 +14,7 @@ router.get(`/`, async (req, res) =>{
 })
 
 router.get('/:id', async(req,res)=>{
-    const user = await User.findById(req.params.id).select('-passwordHash');
+    const user = await User.findById(req.params.id)
 
     if(!user) {
         res.status(500).json({message: 'The user with the given ID was not found.'})
@@ -26,7 +26,7 @@ router.post('/', async (req,res)=>{
     let user = new User({
         name: req.body.name,
         email: req.body.email,
-        passwordHash: bcrypt.hashSync(req.body.password, 10),
+        password: bcrypt.hashSync(req.body.password, 10),
         phone: req.body.phone,
         isAdmin: req.body.isAdmin,
         street: req.body.street,
@@ -50,7 +50,7 @@ router.put('/:id',async (req, res)=> {
     if(req.body.password) {
         newPassword = bcrypt.hashSync(req.body.password, 10)
     } else {
-        newPassword = userExist.passwordHash;
+        newPassword = userExist.password;
     }
 
     const user = await User.findByIdAndUpdate(
@@ -58,7 +58,7 @@ router.put('/:id',async (req, res)=> {
         {
             name: req.body.name,
             email: req.body.email,
-            passwordHash: newPassword,
+            password: newPassword,
             phone: req.body.phone,
             isAdmin: req.body.isAdmin,
             street: req.body.street,
@@ -77,13 +77,14 @@ router.put('/:id',async (req, res)=> {
 })
 
 router.post('/login', async (req,res) => {
-    const user = await User.findOne({email: req.body.email})
-    const secret = process.env.secret;
+    const user = await User.findOne({email: req.body.email}).exec()
+    const secret = process.env.JWT_SECRET;
+    console.log(">>>>>>>>",user)
     if(!user) {
         return res.status(400).send('The user not found');
     }
 
-    if(user && bcrypt.compareSync(req.body.password, user.passwordHash)) {
+    if(user && bcrypt.compareSync(req.body.password, user.password)) {
         const token = jwt.sign(
             {
                 userId: user.id,
@@ -106,7 +107,7 @@ router.post('/register', async (req,res)=>{
     let user = new User({
         name: req.body.name,
         email: req.body.email,
-        passwordHash: bcrypt.hashSync(req.body.password, 10),
+        password: bcrypt.hashSync(req.body.password, 10),
         phone: req.body.phone,
         isAdmin: req.body.isAdmin,
         street: req.body.street,
