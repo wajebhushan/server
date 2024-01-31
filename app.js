@@ -26,6 +26,7 @@ const productsRoutes = require('./routes/products');
 const usersRoutes = require('./routes/users');
 const ordersRoutes = require('./routes/orders');
 
+
 const api = process.env.API_URL;
 
 app.use(`${api}/categories`, categoriesRoutes);
@@ -37,7 +38,7 @@ app.use(`${api}/orders`, ordersRoutes);
 mongoose.connect(process.env.CONNECTION_STRING, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    dbName: 'eshop-database'
+    dbName: 'eshop_database'
 })
 .then(()=>{
     console.log('Database Connection is ready...')
@@ -51,3 +52,6 @@ app.listen(3000, ()=>{
 
     console.log('server is running http://localhost:3000');
 })
+
+
+
