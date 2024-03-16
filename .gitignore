@@ -6,3 +6,4 @@ node_modules/
 
 # Ignore environment configuration files
 .env
+*node_modules/*
