@@ -79,7 +79,7 @@ router.put('/:id',async (req, res)=> {
 router.post('/login', async (req,res) => {
     const user = await User.findOne({email: req.body.email}).exec()
     const secret = process.env.JWT_SECRET;
-    console.log(">>>>>>>>",user)
+    console.log("secret",secret)
     if(!user) {
         return res.status(400).send('The user not found');
     }
